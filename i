@@ -1,37 +1,6 @@
 -- By xiba @8/12/2023
 -- Air Key Manjaro v1.0
 
-local function kickPlayer()
-		-- Kick the player
-		game.Players.LocalPlayer:Kick("Invalid key provided.")
-	end
-
-	local function isKeyValid(key)
-		-- Hash the key (you'll need to implement a hashing function)
-		local hashedKey = hashFunction(key) -- Define `hashFunction` to hash the key securely
-		local response = L_39_func('https://redirect-api.work.ink/tokenValid/' .. hashedKey)
-		local result = game.HttpService:JSONDecode(response)
-		return result.valid
-	end
-
-	L_21_.MouseButton1Down:Connect(function()
-		-- Your sound and animation code...
-		if L_25_.Text:len() == 36 then
-			if isKeyValid(L_25_.Text) then
-				Whitelisted = true
-				-- (success sound and UI transition...)
-			else
-				-- Log invalid attempt
-				print("Invalid key attempt: " .. L_25_.Text)
-				kickPlayer()
-			end
-		else
-			-- Handle invalid length
-			print("Key length invalid: " .. L_25_.Text)
-			kickPlayer()
-		end
-	end)
-
 function fontFix(L_1_arg0)
 	return Font.new(L_1_arg0.Family, L_1_arg0.Weight, L_1_arg0.Style)
 end
@@ -130,23 +99,39 @@ function WhitelistCreate(L_8_arg0, L_9_arg1, L_10_arg2)
 	local L_20_ = createObject("UICorner", {
 		Parent = L_19_,
 	})
-	local L_21_ = createObject("TextButton", {
-		Parent = L_13_,
-		BackgroundColor3 = Color3.fromRGB(91, 161, 78),
-		BorderColor3 = Color3.fromRGB(0, 0, 0),
-		BorderSizePixel = 0,
-		Position = UDim2.new(0.06400004029273987, 0, 0.40147167444229126, 0),
-		Size = UDim2.new(0, 63, 0, 21),
-		AutoButtonColor = false,
-		Font = Enum.Font.Gotham,
-		FontFace = fontFix{
-			Family = "rbxasset://fonts/families/GothamSSm.json",
-			Weight = Enum.FontWeight.Regular,
-			Style = Enum.FontStyle.Normal
-		},
-		RichText = true,
-		Text = "LOGIN",
-		TextColor3 = Color3.fromRGB(255, 255, 255),
+    local L_13_ = Instance.new("Frame") -- Assuming you have a Frame to parent the button
+    
+	local L_21_ = Instance.new("TextButton") -- Create a new TextButton
+    L_21_.Parent = L_13_
+    L_21_.BackgroundColor3 = Color3.fromRGB(91, 161, 78)
+    L_21_.BorderColor3 = Color3.fromRGB(0, 0, 0)
+    L_21_.BorderSizePixel = 0
+    L_21_.Position = UDim2.new(0.064, 0, 0.401, 0)
+    L_21_.Size = UDim2.new(0, 63, 0, 21)
+    L_21_.AutoButtonColor = false
+    L_21_.Font = Enum.Font.Gotham
+    L_21_.Text = "LOGIN"
+    L_21_.TextColor3 = Color3.fromRGB(255, 255, 255)
+
+    if L_21_ then
+        L_21_.MouseButton1Down:Connect(function()
+            -- Assuming L_25_ is defined elsewhere in your code
+            if L_25_ and L_25_.Text:len() == 36 then
+                if L_40_func(L_25_.Text) then
+                    Whitelisted = true
+                    -- Play success sound and handle UI transition
+                else
+                    print("Invalid key attempt: " .. L_25_.Text)
+                    kickPlayer()
+                end
+            else
+                print("Key length invalid: " .. (L_25_ and L_25_.Text or "nil"))
+                kickPlayer()
+            end
+        end)
+    else
+        print("Error: L_21_ is nil")
+    end
 	})
 	local L_22_ = createObject("UIStroke", {
 		Parent = L_21_,
@@ -412,5 +397,3 @@ function WhitelistCreate(L_8_arg0, L_9_arg1, L_10_arg2)
 	until Whitelisted
 end
 return WhitelistCreate
-
-	
